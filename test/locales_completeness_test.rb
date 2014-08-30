@@ -12,45 +12,58 @@ class LocalesCompletenessTest < Minitest::Test
   
   def setup
     I18n.enforce_available_locales = false
-    load_translations_into_i18n!
-  end
-  
-  def load_translations_into_i18n!
-    if !@loaded
-      Dir.glob('config/locales/*.yml').each do |file|
-        content = YAML.load_file(file)
-        language = content.keys.first
-        I18n.backend.store_translations(language.to_sym, content[language])
-      end
-      @loaded = true
-    end
   end
 
   class << self
 
-    def all_locales
+    def locales_to_test
       %w(de)
     end
 
-    def all_keys
-      @all_keys ||= begin
-        reference_file = Admin::Engine.root.join("config/locales/typus.#{REFERENCE_LOCALE}.yml")
-        data = YAML.load_file(reference_file)[REFERENCE_LOCALE]
-        translations = I18n.backend.flatten_translations(REFERENCE_LOCALE, data, false, false)
-        translations.keys
+    def locale_file(locale)
+      if (locale == REFERENCE_LOCALE)
+        Admin::Engine.root.join("config/locales/typus.#{locale}.yml")
+      else
+        File.join(File.dirname(__FILE__), "../config/locales/typus.#{locale}.yml")
       end
+    end
+
+    def translations(locale)
+      file = locale_file(locale)
+      data = YAML.load_file(file)[locale]
+      I18n.backend.flatten_translations(locale, data, false, false)
+    end
+
+    def reference_keys
+      @reference_keys ||= translations(REFERENCE_LOCALE).keys
     end
 
   end
 
-  all_locales.each do |current_locale|
-    all_keys.each do |key|
-      define_method("test_#{current_locale}_has_#{key.to_s.gsub('.', '_')}") do
-        I18n.locale = current_locale
-        msg = "Locale #{current_locale} has no translation for: #{key}."
-        refute(I18n.t(key).include?("translation missing"), msg)
-      end
+  locales_to_test.each do |current_locale|
+
+    #
+    # test all translated locales are complete, i.e. contain all keys that are in the gem
+    #
+    define_method("test_#{current_locale}_is_complete") do
+      reference_keys = self.class.reference_keys
+      locale_keys    = self.class.translations(current_locale).keys
+      difference = reference_keys.dup - locale_keys
+      msg = %(The locale "#{current_locale}" is missing translations. Please add translations for the keys listed below)
+      assert_equal [], difference, msg
     end
+
+    #
+    # test the translated locales have no obsolete keys
+    #
+    define_method("test_#{current_locale}_has_no_obsolete_keys") do
+      reference_keys = self.class.reference_keys
+      locale_keys    = self.class.translations(current_locale).keys
+      difference = locale_keys - reference_keys.dup
+      msg = %(The locale "#{current_locale}" has obsolete translations. Please remove the keys listed below)
+      assert_equal [], difference, msg
+    end
+
   end
 
 end
