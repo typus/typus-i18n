@@ -7,7 +7,7 @@ de:
       help: "Hilfe"
       settings: "Einstellungen"
       confirm_question: "Sind Sie sicher?"
-      restore_question: 'Restore?'
+      restore_question: 'Wiederherstellen?'
 
     buttons:
       add: "Hinzufügen"

@@ -12,10 +12,10 @@ class LocalesCompletenessTest < Minitest::Test
   
   def setup
     I18n.enforce_available_locales = false
-    load_translations!
+    load_translations_into_i18n!
   end
   
-  def load_translations!
+  def load_translations_into_i18n!
     if !@loaded
       Dir.glob('config/locales/*.yml').each do |file|
         content = YAML.load_file(file)
@@ -33,17 +33,19 @@ class LocalesCompletenessTest < Minitest::Test
     end
 
     def all_keys
-      reference_file = Admin::Engine.root.join("config/locales/typus.#{REFERENCE_LOCALE}.yml")
-      data = YAML.load_file(reference_file)[REFERENCE_LOCALE]
-      translations = I18n.backend.flatten_translations(REFERENCE_LOCALE, data, false, false)
-      translations.keys
+      @all_keys ||= begin
+        reference_file = Admin::Engine.root.join("config/locales/typus.#{REFERENCE_LOCALE}.yml")
+        data = YAML.load_file(reference_file)[REFERENCE_LOCALE]
+        translations = I18n.backend.flatten_translations(REFERENCE_LOCALE, data, false, false)
+        translations.keys
+      end
     end
 
   end
 
   all_locales.each do |current_locale|
     all_keys.each do |key|
-      define_method("test_locale_#{current_locale}_has_#{key.to_s.gsub('.', '_')}") do
+      define_method("test_#{current_locale}_has_#{key.to_s.gsub('.', '_')}") do
         I18n.locale = current_locale
         msg = "Locale #{current_locale} has no translation for: #{key}."
         refute(I18n.t(key).include?("translation missing"), msg)
