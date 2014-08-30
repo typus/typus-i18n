@@ -1,3 +1,5 @@
+[![Build Status](https://api.travis-ci.org/typus/typus-i18n.svg)](https://travis-ci.org/typus/typus-i18n)
+
 # Typus::I18n
 
 i18n files for typus
