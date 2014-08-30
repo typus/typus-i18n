@@ -1,4 +1,4 @@
-Copyright (c) 2014 Phillip Oertel
+Copyright (c) 2014 Francesc Esplugas, Phillip Oertel
 
 MIT License
 
