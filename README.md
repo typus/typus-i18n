@@ -1,6 +1,6 @@
 # Typus::I18n
 
-TODO: Write a gem description
+i18n files for typus
 
 ## Installation
 
@@ -18,7 +18,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+TODO
 
 ## Contributing
 
