@@ -48,7 +48,7 @@ class LocalesCompletenessTest < Minitest::Test
     define_method("test_#{current_locale}_is_complete") do
       reference_keys = self.class.reference_keys
       locale_keys    = self.class.translations(current_locale).keys
-      difference = reference_keys.dup - locale_keys
+      difference = reference_keys - locale_keys
       msg = %(The locale "#{current_locale}" is missing translations. Please add translations for the keys listed below)
       assert_equal [], difference, msg
     end
@@ -59,7 +59,7 @@ class LocalesCompletenessTest < Minitest::Test
     define_method("test_#{current_locale}_has_no_obsolete_keys") do
       reference_keys = self.class.reference_keys
       locale_keys    = self.class.translations(current_locale).keys
-      difference = locale_keys - reference_keys.dup
+      difference = locale_keys - reference_keys
       msg = %(The locale "#{current_locale}" has obsolete translations. Please remove the keys listed below)
       assert_equal [], difference, msg
     end
