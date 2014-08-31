@@ -3,16 +3,13 @@ require 'rails'
 require 'typus'
 require 'yaml'
 
-require "i18n/backend/flatten" 
+require "i18n/backend/flatten"
 I18n::Backend::Simple.send(:include, I18n::Backend::Flatten)
+I18n.enforce_available_locales = false
 
 class LocalesCompletenessTest < Minitest::Test
-  
+
   REFERENCE_LOCALE = "en"
-  
-  def setup
-    I18n.enforce_available_locales = false
-  end
 
   class << self
 
@@ -34,33 +31,27 @@ class LocalesCompletenessTest < Minitest::Test
       I18n.backend.flatten_translations(locale, data, false, false)
     end
 
-    def reference_keys
-      @reference_keys ||= translations(REFERENCE_LOCALE).keys
-    end
-
   end
 
-  locales_to_test.each do |current_locale|
+  locales_to_test.each do |locale|
 
-    #
-    # test all translated locales are complete, i.e. contain all keys that are in the gem
-    #
-    define_method("test_#{current_locale}_is_complete") do
-      reference_keys = self.class.reference_keys
-      locale_keys    = self.class.translations(current_locale).keys
-      difference = reference_keys - locale_keys
-      msg = %(The locale "#{current_locale}" is missing translations. Please add translations for the keys listed below)
+    def all_keys
+      locale_keys(REFERENCE_LOCALE)
+    end
+
+    def locale_keys(locale)
+      self.class.translations(locale).keys
+    end
+
+    define_method("test_#{locale}_is_complete") do
+      difference = all_keys - locale_keys(locale)
+      msg = %(The locale "#{locale}" is missing translations. Please add translations for the keys listed below)
       assert_equal [], difference, msg
     end
 
-    #
-    # test the translated locales have no obsolete keys
-    #
-    define_method("test_#{current_locale}_has_no_obsolete_keys") do
-      reference_keys = self.class.reference_keys
-      locale_keys    = self.class.translations(current_locale).keys
-      difference = locale_keys - reference_keys
-      msg = %(The locale "#{current_locale}" has obsolete translations. Please remove the keys listed below)
+    define_method("test_#{locale}_has_no_obsolete_keys") do
+      difference = locale_keys(locale) - all_keys
+      msg = %(The locale "#{locale}" has obsolete translations. Please remove the keys listed below)
       assert_equal [], difference, msg
     end
 
