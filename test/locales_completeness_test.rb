@@ -10,38 +10,31 @@ I18n.enforce_available_locales = false
 class LocalesCompletenessTest < Minitest::Test
 
   REFERENCE_LOCALE = "en"
+  LOCALES_TO_TEST  = %w(de)
 
-  class << self
-
-    def locales_to_test
-      %w(de)
+  def locale_file(locale)
+    if (locale == REFERENCE_LOCALE)
+      Admin::Engine.root.join("config/locales/typus.#{locale}.yml")
+    else
+      File.join(File.dirname(__FILE__), "../config/locales/typus.#{locale}.yml")
     end
-
-    def locale_file(locale)
-      if (locale == REFERENCE_LOCALE)
-        Admin::Engine.root.join("config/locales/typus.#{locale}.yml")
-      else
-        File.join(File.dirname(__FILE__), "../config/locales/typus.#{locale}.yml")
-      end
-    end
-
-    def translations(locale)
-      file = locale_file(locale)
-      data = YAML.load_file(file)[locale]
-      I18n.backend.flatten_translations(locale, data, false, false)
-    end
-
   end
 
-  locales_to_test.each do |locale|
+  def translations(locale)
+    file = locale_file(locale)
+    data = YAML.load_file(file)[locale]
+    I18n.backend.flatten_translations(locale, data, false, false)
+  end
 
-    def all_keys
-      locale_keys(REFERENCE_LOCALE)
-    end
+  def locale_keys(locale)
+    translations(locale).keys
+  end
 
-    def locale_keys(locale)
-      self.class.translations(locale).keys
-    end
+  def all_keys
+    locale_keys(REFERENCE_LOCALE)
+  end
+
+  LOCALES_TO_TEST.each do |locale|
 
     define_method("test_#{locale}_is_complete") do
       difference = all_keys - locale_keys(locale)
