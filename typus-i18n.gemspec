@@ -12,10 +12,7 @@ Gem::Specification.new do |spec|
   spec.version       = Typus::I18n::VERSION
   spec.authors       = ["Francesc Esplugas", "Phillip Oertel"]
   spec.email         = ["support@typuscmf.com"]
-  spec.summary       = %q{translation files for typus, the Ruby on Rails Admin Panel.}
-  spec.homepage      = ""
-  spec.license       = "MIT"
-
+  spec.summary       = %q{Translation files for typus, the Ruby on Rails Admin Panel.}
   spec.homepage      = "http://www.typuscmf.com/"
   spec.license       = "MIT"
 
