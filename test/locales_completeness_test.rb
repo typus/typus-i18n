@@ -46,6 +46,17 @@ class LocalesCompletenessTest < Minitest::Test
       assert_equal [], difference, msg
     end
 
+    # WIP
+    # define_method("test_#{locale}_has_no_empty_translations") do
+    #   I18n.backend.load_translations(translations(REFERENCE_LOCALE))
+    #   I18n.backend.load_translations(locale)
+    #   I18n.locale = locale
+    #   all_keys.each do |key|
+    #     p I18n.t(key)
+    #     refute_equal "", I18n.t(key)
+    #   end
+    # end
+
     define_method("test_#{locale}_has_no_obsolete_keys") do
       difference = locale_keys(locale) - all_keys
       msg = %(The locale "#{locale}" has obsolete translations. Please remove the keys listed below)
