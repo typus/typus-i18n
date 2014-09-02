@@ -1,31 +1,36 @@
 [![Build Status](https://api.travis-ci.org/typus/typus-i18n.svg)](https://travis-ci.org/typus/typus-i18n)
 
-# Typus::I18n
+# Welcome to typus-18n!
 
-i18n files for typus
+This gem's (only) purpose is to provide the YAML translation files for typus.
 
-## Installation
 
-Add this line to your application's Gemfile:
+## Currently available languages
 
-    gem 'typus-i18n'
+- en: English (provided by the typus gem itself)
+- de: German
+- Soon: your language? It's easy, see below.
 
-And then execute:
 
-    $ bundle
+## Installation and usage
 
-Or install it yourself as:
+- Add `gem 'typus-i18n'` to your application's `Gemfile`, then run `bundle`.
+- Set either the `#locale` of your admin user instance or `Typus.default_locale` to the language of your choice.
 
-    $ gem install typus-i18n
 
-## Usage
+## How to contribute translations
 
-TODO
+There are two rake tasks to help you with translation:
 
-## Contributing
+1. `rake make_template LOCALE=xx` will generate an empty template file for your language (in `config/locales`).
+2. `rake` will test if your YAML file is complete. Just run it, it will pick your file when it is in the correct place.
 
-1. Fork it ( http://github.com/<my-github-username>/typus-i18n/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+Details:
+
+- fork the gem
+- clone it locally and verify the tests are green, first
+- create the translation file for your language and push it
+- when the tests pass, create a pull request.
+- if your pull request is accepted, win! Then, we would like to add you to the list of maintainers. That way you will get build notifications when the reference YAML file (the english version in the typus gem) changes and your translation needs to be updated.
+
+Hint: some old translations are still available here: https://github.com/typus/typus-i18n/tree/v0.1.0, if you would like to start with them.
