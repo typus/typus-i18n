@@ -10,7 +10,11 @@ I18n.enforce_available_locales = false
 class LocalesCompletenessTest < Minitest::Test
 
   REFERENCE_LOCALE = "en"
-  LOCALES_TO_TEST  = %w(de)
+
+  def self.locales_to_test
+    files = Dir.glob(File.join(File.dirname(__FILE__), '../config/locales/typus.*.yml'))
+    files.map { |file| YAML.load_file(file).keys.first.to_s }
+  end
 
   def locale_file(locale)
     if (locale == REFERENCE_LOCALE)
@@ -34,7 +38,7 @@ class LocalesCompletenessTest < Minitest::Test
     locale_keys(REFERENCE_LOCALE)
   end
 
-  LOCALES_TO_TEST.each do |locale|
+  locales_to_test.each do |locale|
 
     define_method("test_#{locale}_is_complete") do
       difference = all_keys - locale_keys(locale)
